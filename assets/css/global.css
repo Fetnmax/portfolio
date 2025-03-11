@@ -1,0 +1,54 @@
+:root {
+  /* Light Mode */
+  --background-color: linear-gradient(135deg, #fdfbfb, #ebedee);
+  --text-color: #333333;
+  --text-color: #2d3748;
+  --primary-color: #3182ce;
+  --secondary-color: #e2e8f0;
+  --particle-color: #63b3ed;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode */
+  --background-color: linear-gradient(45deg, #01050c, #091022, #13152e);
+  --text-color: #e2e8f0;
+  --primary-color: #63b3ed;
+  --secondary-color: #4a5568;
+  --particle-color: #ffffff;
+}
+
+body {
+  background: var(--background-color);
+  color: var(--text-color);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--primary-color);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+}

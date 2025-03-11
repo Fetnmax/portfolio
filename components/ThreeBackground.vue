@@ -33,10 +33,17 @@ onMounted(() => {
     new THREE.BufferAttribute(posArray, 3)
   );
 
+  const getParticleColor = () => {
+    const color = getComputedStyle(document.documentElement)
+      .getPropertyValue("--particle-color")
+      .trim();
+    return color;
+  };
+
   // Matériel des particules
   const particlesMaterial = new THREE.PointsMaterial({
     size: 0.005,
-    color: "#FFFFFF",
+    color: getParticleColor(),
   });
 
   // Création du système de particules
@@ -61,6 +68,21 @@ onMounted(() => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+
+  // Observer les changements de thème
+  const observer = new MutationObserver(() => {
+    particlesMaterial.color.set(getParticleColor());
+  });
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+
+  // Nettoyage lors du démontage
+  onUnmounted(() => {
+    observer.disconnect();
+  });
 });
 </script>
 
@@ -72,6 +94,6 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   z-index: -1;
-  background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+  background: var(--background-color);
 }
 </style>

@@ -1,9 +1,15 @@
+<script setup lang="ts">
+import About from "~/components/About.vue";
+import Projects from "~/components/Projects.vue";
+</script>
+
 <template>
   <div class="home">
     <div class="hero">
       <h1>Maxime JACOB-SAUSSEREAU</h1>
       <p class="subtitle">Développeur Full Stack</p>
     </div>
+    <About />
     <Projects />
   </div>
 </template>
