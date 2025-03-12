@@ -4,7 +4,7 @@
 
 <script setup>
 import * as THREE from "three";
-import { onMounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 
 onMounted(() => {
   // Configuration de base
@@ -16,12 +16,18 @@ onMounted(() => {
     1000
   );
   const renderer = new THREE.WebGLRenderer({ alpha: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.getElementById("three-background").appendChild(renderer.domElement);
+
+  // Get the container dimensions instead of window
+  const container = document.getElementById("three-background");
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  renderer.setSize(width, height);
+  container.appendChild(renderer.domElement);
 
   // Création des particules
   const particlesGeometry = new THREE.BufferGeometry();
-  const particlesCount = 5000;
+  const particlesCount = 200;
   const posArray = new Float32Array(particlesCount * 3);
 
   for (let i = 0; i < particlesCount * 3; i++) {
@@ -63,11 +69,15 @@ onMounted(() => {
   animate();
 
   // Gestion du redimensionnement
-  window.addEventListener("resize", () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+  const handleResize = () => {
+    const newWidth = container.clientWidth;
+    const newHeight = container.clientHeight;
+    camera.aspect = newWidth / newHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+    renderer.setSize(newWidth, newHeight);
+  };
+
+  window.addEventListener("resize", handleResize);
 
   // Observer les changements de thème
   const observer = new MutationObserver(() => {
@@ -82,18 +92,22 @@ onMounted(() => {
   // Nettoyage lors du démontage
   onUnmounted(() => {
     observer.disconnect();
+    window.removeEventListener("resize", handleResize);
+    // Clean up Three.js resources
+    renderer.dispose();
+    particlesGeometry.dispose();
+    particlesMaterial.dispose();
   });
 });
 </script>
 
 <style scoped>
 #three-background {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: -1;
-  background: var(--background-color);
 }
 </style>

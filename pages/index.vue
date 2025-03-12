@@ -1,42 +1,13 @@
-<script setup lang="ts">
-import About from "~/components/About.vue";
-import Projects from "~/components/Projects.vue";
-</script>
-
 <template>
-  <div class="home">
-    <div class="hero">
-      <h1>Maxime JACOB-SAUSSEREAU</h1>
-      <p class="subtitle">Développeur Full Stack</p>
-    </div>
-    <About />
-    <Projects />
-  </div>
+  <HeroSection />
+  <AboutSection />
+  <ProjectsSection />
 </template>
 
-<style scoped>
-.home {
-  min-height: 100vh;
-}
+<script setup lang="ts">
+import AboutSection from "~/components/sections/AboutSection.vue";
+import ProjectsSection from "~/components/sections/ProjectsSection.vue";
+import HeroSection from "~/components/sections/HeroSection.vue";
+</script>
 
-.hero {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-h1 {
-  font-size: 4rem;
-  margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.subtitle {
-  font-size: 1.5rem;
-  margin-top: 1rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-</style>
+<style scoped></style>
