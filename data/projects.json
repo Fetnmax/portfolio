@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "title": "Portfolio",
+    "description": "Un portfolio interactif et immersif utilisant Vue.js et Three.js pour présenter mes projets, mes compétences et mon parcours de manière dynamique et moderne. L'interface propose une navigation fluide avec des animations 3D pour offrir une expérience utilisateur captivante.",
+    "position": { "x": 0.8, "y": 0.5, "z": 0.2 },
+    "technologies": ["Vue.js", "Three.js"],
+    "links": [
+      { "name": "GitHub", "url": "https://github.com/Fetnmax/portfolio" },
+      { "name": "Live", "url": "https://portfolio.fetnmax.fr" }
+    ],
+    "image": "/images/projects/portfolio.jpg"
+  },
+  {
+    "id": 2,
+    "title": "E-commerce App",
+    "description": "Application e-commerce complète avec panier et paiement",
+    "position": { "x": -0.7, "y": 0.3, "z": 0.6 },
+    "technologies": ["React", "Node.js", "MongoDB", "Stripe"],
+    "links": [
+      { "name": "GitHub", "url": "https://github.com/username/ecommerce" }
+    ],
+    "image": "/images/projects/ecommerce.jpg"
+  },
+  {
+    "id": 3,
+    "title": "Application Mobile",
+    "description": "Application mobile de suivi de fitness",
+    "position": { "x": 0.2, "y": -0.8, "z": 0.5 },
+    "technologies": ["React Native", "Firebase", "Redux"],
+    "links": [
+      { "name": "GitHub", "url": "https://github.com/username/fitness-app" },
+      { "name": "App Store", "url": "https://apps.apple.com/app/id123456" }
+    ],
+    "image": "/images/projects/mobile-app.jpg"
+  },
+  {
+    "id": 4,
+    "title": "Dashboard Analytics",
+    "description": "Dashboard d'analyse de données avec visualisations",
+    "position": { "x": -0.3, "y": -0.5, "z": -0.7 },
+    "technologies": ["D3.js", "Vue.js", "Express", "PostgreSQL"],
+    "links": [{ "name": "Demo", "url": "https://dashboard.example.com" }],
+    "image": "/images/projects/dashboard.jpg"
+  },
+  {
+    "id": 5,
+    "title": "API REST",
+    "description": "API REST pour la gestion de contenu",
+    "position": { "x": 0.5, "y": 0.1, "z": -0.8 },
+    "technologies": ["Node.js", "Express", "MongoDB", "JWT"],
+    "links": [
+      { "name": "GitHub", "url": "https://github.com/username/api" },
+      { "name": "Documentation", "url": "https://api.example.com/docs" }
+    ],
+    "image": "/images/projects/api.jpg"
+  }
+]

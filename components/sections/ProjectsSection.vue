@@ -92,6 +92,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { onMounted, ref, onBeforeUnmount } from "vue";
+import projectsData from "../../data/projects.json";
 
 export default {
   name: "ProjectsSection",
@@ -105,66 +106,8 @@ export default {
     let sphere, raycaster, mouse;
     let projectPoints = [];
 
-    // Liste des projets
-    const projects = [
-      {
-        id: 1,
-        title: "Portfolio",
-        description:
-          "Un portfolio interactif et immersif utilisant Vue.js et Three.js pour présenter mes projets, mes compétences et mon parcours de manière dynamique et moderne. L'interface propose une navigation fluide avec des animations 3D pour offrir une expérience utilisateur captivante.",
-        position: { x: 0.8, y: 0.5, z: 0.2 },
-        technologies: ["Vue.js", "Three.js"],
-        links: [
-          { name: "GitHub", url: "https://github.com/Fetnmax/portfolio" },
-          { name: "Live", url: "https://portfolio.fetnmax.fr" },
-        ],
-        image: "/images/projects/portfolio.jpg",
-      },
-      {
-        id: 2,
-        title: "E-commerce App",
-        description: "Application e-commerce complète avec panier et paiement",
-        position: { x: -0.7, y: 0.3, z: 0.6 },
-        technologies: ["React", "Node.js", "MongoDB", "Stripe"],
-        links: [
-          { name: "GitHub", url: "https://github.com/username/ecommerce" },
-        ],
-        image: "/images/projects/ecommerce.jpg",
-      },
-      {
-        id: 3,
-        title: "Application Mobile",
-        description: "Application mobile de suivi de fitness",
-        position: { x: 0.2, y: -0.8, z: 0.5 },
-        technologies: ["React Native", "Firebase", "Redux"],
-        links: [
-          { name: "GitHub", url: "https://github.com/username/fitness-app" },
-          { name: "App Store", url: "https://apps.apple.com/app/id123456" },
-        ],
-        image: "/images/projects/mobile-app.jpg",
-      },
-      {
-        id: 4,
-        title: "Dashboard Analytics",
-        description: "Dashboard d'analyse de données avec visualisations",
-        position: { x: -0.3, y: -0.5, z: -0.7 },
-        technologies: ["D3.js", "Vue.js", "Express", "PostgreSQL"],
-        links: [{ name: "Demo", url: "https://dashboard.example.com" }],
-        image: "/images/projects/dashboard.jpg",
-      },
-      {
-        id: 5,
-        title: "API REST",
-        description: "API REST pour la gestion de contenu",
-        position: { x: 0.5, y: 0.1, z: -0.8 },
-        technologies: ["Node.js", "Express", "MongoDB", "JWT"],
-        links: [
-          { name: "GitHub", url: "https://github.com/username/api" },
-          { name: "Documentation", url: "https://api.example.com/docs" },
-        ],
-        image: "/images/projects/api.jpg",
-      },
-    ];
+    // Utilisation des projets depuis le fichier JSON
+    const projects = projectsData;
 
     // Initialisation de Three.js
     const initThree = () => {
@@ -383,7 +326,7 @@ export default {
       // Lancer un rayon depuis la caméra
       raycaster.setFromCamera(mouse, camera);
 
-      // Vérifier les intersections avec les points
+      // Vérifier les interse ctions avec les points
       const intersects = raycaster.intersectObjects(projectPoints);
 
       if (intersects.length > 0) {
@@ -552,7 +495,7 @@ export default {
 }
 
 .modal-content {
-  background-color: var(--secondary-color);
+  background-color: var(--modal-background);
   border-radius: 10px;
   padding: 2rem;
   max-width: 800px;
@@ -560,30 +503,48 @@ export default {
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 0 30px rgba(var(--primary-color), 0.3);
-  border: 1px solid var(--primary-color);
+  box-shadow: 0 0 30px var(--modal-shadow-color);
+  border: 1px solid var(--modal-border-color);
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+  transform: scale(0.9);
+  opacity: 0;
+  animation: showModal 0.3s forwards;
+}
+
+@keyframes showModal {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .close-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: var(--primary-color);
-  border: 2px solid var(--primary-color);
-  color: var(--text-color);
-  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--primary-color);
+  font-size: 2rem;
   cursor: pointer;
-  width: 30px;
-  height: 30px;
+  padding: 0;
+  line-height: 1;
+  width: auto;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.3s;
+  transition:
+    color 0.3s,
+    transform 0.2s;
 }
 
 .close-button:hover {
-  background-color: var(--secondary-color);
+  color: var(--text-color);
+  transform: scale(1.2);
+  background-color: transparent;
 }
 
 .modal-content h3 {
@@ -614,7 +575,7 @@ export default {
 .links h4 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color: #ff3333;
+  color: var(--primary-color);
 }
 
 .technologies ul {
@@ -630,7 +591,7 @@ export default {
 
 .technologies li::before {
   content: "•";
-  color: #ff3333;
+  color: var(--primary-color);
   position: absolute;
   left: 0;
 }
@@ -652,7 +613,7 @@ export default {
 }
 
 .link-button:hover {
-  background-color: #ff5555;
+  background-color: var(--secondary-color);
 }
 
 .project-image {

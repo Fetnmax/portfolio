@@ -2,10 +2,12 @@
   /* Light Mode */
   --background-color: linear-gradient(135deg, #fdfbfb, #ebedee);
   --text-color: #333333;
-  --text-color: #2d3748;
   --primary-color: #3182ce;
   --secondary-color: #e2e8f0;
   --particle-color: #63b3ed;
+  --modal-background: #ffffff;
+  --modal-border-color: #3182ce;
+  --modal-shadow-color: rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="dark"] {
@@ -15,6 +17,9 @@
   --primary-color: #63b3ed;
   --secondary-color: #4a5568;
   --particle-color: #ffffff;
+  --modal-background: #1a202c;
+  --modal-border-color: #63b3ed;
+  --modal-shadow-color: rgba(0, 0, 0, 0.5);
 }
 
 body {
