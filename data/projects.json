@@ -4,7 +4,7 @@
     "title": "Portfolio",
     "description": "Un portfolio interactif et immersif utilisant Vue.js et Three.js pour présenter mes projets, mes compétences et mon parcours de manière dynamique et moderne. L'interface propose une navigation fluide avec des animations 3D pour offrir une expérience utilisateur captivante.",
     "position": { "x": 0.8, "y": 0.5, "z": 0.2 },
-    "technologies": ["Vue.js", "Three.js"],
+    "technologies": ["Vue.js", "Three.js", "Nuxt.js", "HTML", "CSS"],
     "links": [
       { "name": "GitHub", "url": "https://github.com/Fetnmax/portfolio" },
       { "name": "Live", "url": "https://portfolio.fetnmax.fr" }

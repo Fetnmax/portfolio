@@ -37,6 +37,8 @@
 </template>
 
 <script lang="ts" setup>
+import skillsData from "~/data/skills.json";
+
 interface Skill {
   name: string;
   icon: string;
@@ -48,50 +50,7 @@ interface SkillCategory {
   skills: Skill[];
 }
 
-const skillCategories: SkillCategory[] = [
-  {
-    name: "Développement Frontend",
-    skills: [
-      { name: "HTML5", icon: "vscode-icons:file-type-html", level: 95 },
-      { name: "CSS3", icon: "vscode-icons:file-type-css", level: 90 },
-      { name: "JavaScript", icon: "logos:javascript", level: 92 },
-      { name: "TypeScript", icon: "logos:typescript-icon", level: 85 },
-      { name: "Vue.js", icon: "logos:vue", level: 90 },
-      { name: "React", icon: "logos:react", level: 80 },
-      { name: "Nuxt.js", icon: "logos:nuxt-icon", level: 88 },
-    ],
-  },
-  {
-    name: "Développement Backend",
-    skills: [
-      { name: "Node.js", icon: "logos:nodejs-icon", level: 88 },
-      { name: "Express", icon: "simple-icons:express", level: 85 },
-      { name: "Python", icon: "logos:python", level: 75 },
-      { name: "PHP", icon: "logos:php", level: 70 },
-      { name: "MongoDB", icon: "logos:mongodb-icon", level: 80 },
-      { name: "MySQL", icon: "logos:mysql", level: 85 },
-    ],
-  },
-  {
-    name: "Outils & DevOps",
-    skills: [
-      { name: "Git", icon: "logos:git-icon", level: 90 },
-      { name: "Docker", icon: "logos:docker-icon", level: 75 },
-      { name: "AWS", icon: "logos:aws", level: 70 },
-      { name: "GitHub", icon: "mdi:github", level: 85 },
-      { name: "CI/CD", icon: "carbon:continuous-deployment", level: 75 },
-    ],
-  },
-  {
-    name: "Design & UI/UX",
-    skills: [
-      { name: "Figma", icon: "logos:figma", level: 80 },
-      { name: "Photoshop", icon: "logos:adobe-photoshop", level: 65 },
-      { name: "Responsive Design", icon: "mdi:responsive", level: 90 },
-      { name: "Tailwind CSS", icon: "logos:tailwindcss-icon", level: 85 },
-    ],
-  },
-];
+const skillCategories: SkillCategory[] = skillsData.skillCategories;
 </script>
 
 <style scoped>
