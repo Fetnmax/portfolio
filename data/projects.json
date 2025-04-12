@@ -2,57 +2,57 @@
   {
     "id": 1,
     "title": "Portfolio",
-    "description": "Un portfolio interactif et immersif utilisant Vue.js et Three.js pour présenter mes projets, mes compétences et mon parcours de manière dynamique et moderne. L'interface propose une navigation fluide avec des animations 3D pour offrir une expérience utilisateur captivante.",
+    "description": "Un portfolio interactif et immersif conçu avec Three.js et Nuxt.js (basé sur Vue.js), permettant de présenter mes projets, mes compétences et mon parcours de manière moderne et dynamique. L'interface intègre des animations 3D fluides pour offrir une expérience utilisateur captivante et originale.",
     "position": { "x": 0.8, "y": 0.5, "z": 0.2 },
-    "technologies": ["Vue.js", "Three.js", "Nuxt.js", "HTML", "CSS"],
+    "technologies": [
+      "vuejs",
+      "threejs",
+      "nuxtjs",
+      "html5",
+      "css3",
+      "typescript",
+      "git",
+      "docker"
+    ],
     "links": [
       { "name": "GitHub", "url": "https://github.com/Fetnmax/portfolio" },
       { "name": "Live", "url": "https://portfolio.fetnmax.fr" }
     ],
-    "image": "/images/projects/portfolio.jpg"
+    "image": "/images/projects/portfolio.png"
   },
   {
     "id": 2,
-    "title": "E-commerce App",
-    "description": "Application e-commerce complète avec panier et paiement",
+    "title": "AlgoForge",
+    "description": "Application d'édition d'algorithmes respectant le formalisme de l'IUT de Bayonne et du Pays Basque. Elle propose une interface web intuitive pour rédiger et visualiser des algorithmes, ainsi qu'un espace cloud pour les stocker. Durant mon cursus en BUT, j'ai contribué à la création de cette application, développée en JavaScript, et à la mise en place de l'environnement cloud à l'aide du framework Svelte.",
     "position": { "x": -0.7, "y": 0.3, "z": 0.6 },
-    "technologies": ["React", "Node.js", "MongoDB", "Stripe"],
-    "links": [
-      { "name": "GitHub", "url": "https://github.com/username/ecommerce" }
+    "technologies": [
+      "javascript",
+      "svelte",
+      "typescript",
+      "html5",
+      "css3",
+      "git"
     ],
-    "image": "/images/projects/ecommerce.jpg"
+    "links": [
+      { "name": "Live", "url": "https://algoforge.fr/" },
+      {
+        "name": "GitHub",
+        "url": "https://github.com/Bing-Chill-inc/Algoforge-main"
+      }
+    ],
+    "image": "/images/projects/algoforge.png"
   },
   {
     "id": 3,
-    "title": "Application Mobile",
-    "description": "Application mobile de suivi de fitness",
-    "position": { "x": 0.2, "y": -0.8, "z": 0.5 },
-    "technologies": ["React Native", "Firebase", "Redux"],
+    "title": "Serveur de chat",
+    "description": "Serveur de messagerie en C conçu comme un prototype fonctionnel permettant à plusieurs utilisateurs de communiquer au sein de canaux de discussion personnalisables. Ce projet m'a offert l'opportunité de renforcer mes compétences en programmation bas niveau, notamment en manipulation des sockets, en gestion des connexions simultanées et en structuration de protocoles de communication.",
+    "position": { "x": 0.4, "y": -0.8, "z": -0.3 },
+    "technologies": ["c"],
     "links": [
-      { "name": "GitHub", "url": "https://github.com/username/fitness-app" },
-      { "name": "App Store", "url": "https://apps.apple.com/app/id123456" }
-    ],
-    "image": "/images/projects/mobile-app.jpg"
-  },
-  {
-    "id": 4,
-    "title": "Dashboard Analytics",
-    "description": "Dashboard d'analyse de données avec visualisations",
-    "position": { "x": -0.3, "y": -0.5, "z": -0.7 },
-    "technologies": ["D3.js", "Vue.js", "Express", "PostgreSQL"],
-    "links": [{ "name": "Demo", "url": "https://dashboard.example.com" }],
-    "image": "/images/projects/dashboard.jpg"
-  },
-  {
-    "id": 5,
-    "title": "API REST",
-    "description": "API REST pour la gestion de contenu",
-    "position": { "x": 0.5, "y": 0.1, "z": -0.8 },
-    "technologies": ["Node.js", "Express", "MongoDB", "JWT"],
-    "links": [
-      { "name": "GitHub", "url": "https://github.com/username/api" },
-      { "name": "Documentation", "url": "https://api.example.com/docs" }
-    ],
-    "image": "/images/projects/api.jpg"
+      {
+        "name": "GitHub",
+        "url": "https://github.com/Fetnmax/Chat_Multi-Clients"
+      }
+    ]
   }
 ]

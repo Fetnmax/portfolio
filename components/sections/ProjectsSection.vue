@@ -55,10 +55,10 @@
             <h4>Technologies</h4>
             <ul>
               <li
-                v-for="(tech, index) in selectedProject.technologies"
+                v-for="(techId, index) in selectedProject.technologies"
                 :key="index"
               >
-                {{ tech }}
+                {{ getTechnologyName(techId) }}
               </li>
             </ul>
           </div>
@@ -95,9 +95,9 @@
       <h4>{{ hoveredProject.title }}</h4>
       <div class="preview-tech">
         <span
-          v-for="tech in hoveredProject.technologies.slice(0, 3)"
-          :key="tech"
-          >{{ tech }}</span
+          v-for="techId in hoveredProject.technologies.slice(0, 3)"
+          :key="techId"
+          >{{ getTechnologyName(techId) }}</span
         >
         <span class="more-tech" v-if="hoveredProject.technologies.length > 3">
           +{{ hoveredProject.technologies.length - 3 }}
@@ -112,6 +112,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { onMounted, ref, onBeforeUnmount, computed } from "vue";
 import projectsData from "../../data/projects.json";
+import skillsData from "../../data/skills.json";
 
 export default {
   name: "ProjectsSection",
@@ -129,6 +130,20 @@ export default {
 
     // Utilisation des projets depuis le fichier JSON
     const projects = projectsData;
+
+    // Fonction pour obtenir le nom d'une technologie à partir de son ID
+    const getTechnologyName = (techId) => {
+      // Parcourir toutes les catégories de compétences
+      for (const category of skillsData.skillCategories) {
+        // Chercher la compétence avec l'ID correspondant
+        const skill = category.skills.find((skill) => skill.id === techId);
+        if (skill) {
+          return skill.name;
+        }
+      }
+      // Si l'ID n'est pas trouvé, retourner l'ID lui-même
+      return techId;
+    };
 
     // Initialisation de Three.js
     const initThree = () => {
@@ -481,6 +496,7 @@ export default {
       showHelp,
       hoveredProject,
       previewStyle,
+      getTechnologyName,
     };
   },
 };
