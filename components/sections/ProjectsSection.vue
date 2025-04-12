@@ -85,13 +85,32 @@
         </div>
       </div>
     </div>
+
+    <!-- Prévisualisation au survol -->
+    <div
+      class="project-preview"
+      v-if="hoveredProject && !selectedProject"
+      :style="previewStyle"
+    >
+      <h4>{{ hoveredProject.title }}</h4>
+      <div class="preview-tech">
+        <span
+          v-for="tech in hoveredProject.technologies.slice(0, 3)"
+          :key="tech"
+          >{{ tech }}</span
+        >
+        <span class="more-tech" v-if="hoveredProject.technologies.length > 3">
+          +{{ hoveredProject.technologies.length - 3 }}
+        </span>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { onMounted, ref, onBeforeUnmount } from "vue";
+import { onMounted, ref, onBeforeUnmount, computed } from "vue";
 import projectsData from "../../data/projects.json";
 
 export default {
@@ -100,6 +119,8 @@ export default {
     const container = ref(null);
     const selectedProject = ref(null);
     const showHelp = ref(false);
+    const hoveredProject = ref(null);
+    const hoverPosition = ref({ x: 0, y: 0 });
 
     // Référence pour stocker les objets Three.js
     let scene, camera, renderer, controls;
@@ -341,6 +362,24 @@ export default {
       }
     };
 
+    // Fonction pour afficher le tooltip du projet
+    const showProjectTooltip = (event, title) => {
+      // Mettre à jour la position du survol pour le project-preview
+      hoverPosition.value = {
+        x: event.clientX,
+        y: event.clientY,
+      };
+
+      // Nous n'avons plus besoin de créer/mettre à jour un tooltip séparé
+      // car nous utilisons project-preview à la place
+
+      // Supprimer l'ancien tooltip s'il existe encore
+      const oldTooltip = document.querySelector(".project-tooltip");
+      if (oldTooltip) {
+        oldTooltip.parentNode.removeChild(oldTooltip);
+      }
+    };
+
     // Gestion du survol des points
     const onMouseMove = (event) => {
       mouse.x =
@@ -364,10 +403,8 @@ export default {
         point.scale.set(1, 1, 1);
       });
 
-      // Masquer le tooltip s'il n'y a pas de survol
-      if (document.querySelector(".project-tooltip")) {
-        document.querySelector(".project-tooltip").style.display = "none";
-      }
+      // Réinitialiser le projet survolé par défaut
+      hoveredProject.value = null;
 
       // Agrandir le point survolé et changer le curseur
       if (intersects.length > 0) {
@@ -378,30 +415,25 @@ export default {
         const project = intersects[0].object.userData.project;
         document.title = project.title;
 
-        // Afficher le tooltip avec le titre du projet
+        // Mettre à jour le projet survolé (active l'affichage de project-preview)
+        hoveredProject.value = project;
+
+        // Mettre à jour la position
         showProjectTooltip(event, project.title);
+
+        // Marquer ce point comme ayant été survolé récemment
+        intersects[0].object.userData.wasHovered = true;
+
+        // Réinitialiser après un délai
+        setTimeout(() => {
+          if (intersects[0].object) {
+            intersects[0].object.userData.wasHovered = false;
+          }
+        }, 5000);
       } else {
         renderer.domElement.style.cursor = "default";
         document.title = "Portfolio";
       }
-    };
-
-    // Fonction pour afficher le tooltip du projet
-    const showProjectTooltip = (event, title) => {
-      // Créer ou récupérer le tooltip
-      let tooltip = document.querySelector(".project-tooltip");
-
-      if (!tooltip) {
-        tooltip = document.createElement("div");
-        tooltip.className = "project-tooltip";
-        document.body.appendChild(tooltip);
-      }
-
-      // Mettre à jour le contenu et la position
-      tooltip.textContent = title;
-      tooltip.style.display = "block";
-      tooltip.style.left = `${event.clientX + 10}px`;
-      tooltip.style.top = `${event.clientY + 10}px`;
     };
 
     // Animation
@@ -416,6 +448,13 @@ export default {
       selectedProject.value = null;
       controls.autoRotate = true;
     };
+
+    const previewStyle = computed(() => {
+      return {
+        left: `${hoverPosition.value.x + 15}px`,
+        top: `${hoverPosition.value.y + 15}px`,
+      };
+    });
 
     // Initialisation au montage du composant
     onMounted(() => {
@@ -440,6 +479,8 @@ export default {
       selectedProject,
       closeModal,
       showHelp,
+      hoveredProject,
+      previewStyle,
     };
   },
 };
@@ -765,19 +806,58 @@ export default {
   left: 0;
 }
 
-/* Styles pour le tooltip des projets */
-:global(.project-tooltip) {
+.project-preview {
   position: fixed;
-  background-color: var(--secondary-color);
-  color: var(--text-color);
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  z-index: 1000;
+  z-index: 100;
+  background-color: var(--modal-background);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border-left: 3px solid var(--primary-color);
+  max-width: 250px;
   pointer-events: none;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--primary-color);
-  max-width: 200px;
-  white-space: nowrap;
+  transform: translateY(5px);
+  animation: fadeIn 0.2s forwards;
+}
+
+.project-preview h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.preview-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.preview-tech span {
+  font-size: 0.8rem;
+  padding: 0.1rem 0.5rem;
+  background-color: var(--bg-light);
+  border-radius: 3px;
+}
+
+.preview-tech .more-tech {
+  font-size: 0.7rem;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  opacity: 0.85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
