@@ -24,6 +24,6 @@ body {
   margin: 0;
   font-family: "Arial", sans-serif;
   color: var(--text-color);
-  background-color: transparent;
+  /* background-color: var(--bg-color); */
 }
 </style>

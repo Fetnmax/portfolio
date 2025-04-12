@@ -1,6 +1,6 @@
 :root {
   /* Light Mode */
-  --background-color: linear-gradient(135deg, #fdfbfb, #ebedee);
+  --background-color: #f5f7fa;
   --text-color: #333333;
   --primary-color: #3182ce;
   --secondary-color: #e2e8f0;
@@ -8,11 +8,23 @@
   --modal-background: #ffffff;
   --modal-border-color: #3182ce;
   --modal-shadow-color: rgba(0, 0, 0, 0.2);
+  --bg-card: #ffffff;
+  --text-primary: #333333;
+  --bg-light: #e9ecef;
+  --primary-light: #63b3ed;
+
+  /* Contact section colors */
+  --contact-bg: #f5f7fa;
+  --contact-card-bg: #ffffff;
+  --contact-input-bg: #f8f9fa;
+  --contact-button: #3182ce;
+  --contact-button-hover: #4299e1;
+  --contact-social-bg: #f1f5f9;
 }
 
 [data-theme="dark"] {
   /* Dark Mode */
-  --background-color: linear-gradient(45deg, #01050c, #091022, #13152e);
+  --background-color: #1a202c;
   --text-color: #e2e8f0;
   --primary-color: #63b3ed;
   --secondary-color: #4a5568;
@@ -20,6 +32,17 @@
   --modal-background: #1a202c;
   --modal-border-color: #63b3ed;
   --modal-shadow-color: rgba(0, 0, 0, 0.5);
+  --bg-card: #2d3748;
+  --bg-light: #4a5568;
+  --primary-light: #90cdf4;
+
+  /* Contact section colors */
+  --contact-bg: #1a202c;
+  --contact-card-bg: #272e3f;
+  --contact-input-bg: #1c2333;
+  --contact-button: #59a5eb;
+  --contact-button-hover: #73b5f3;
+  --contact-social-bg: #232a3b;
 }
 
 body {
