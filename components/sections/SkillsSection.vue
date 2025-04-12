@@ -12,7 +12,7 @@
           <h3 class="category-title">{{ category.name }}</h3>
           <div class="skills-grid">
             <div
-              v-for="(skill, skillIndex) in category.skills"
+              v-for="(skill, skillIndex) in visibleSkills(category)"
               :key="skillIndex"
               class="skill-item"
             >
@@ -40,9 +40,11 @@
 import skillsData from "~/data/skills.json";
 
 interface Skill {
+  id: string;
   name: string;
   icon: string;
   level: number; // 0-100
+  show: boolean;
 }
 
 interface SkillCategory {
@@ -51,6 +53,11 @@ interface SkillCategory {
 }
 
 const skillCategories: SkillCategory[] = skillsData.skillCategories;
+
+// Fonction pour filtrer les compétences visibles (show: true)
+const visibleSkills = (category: SkillCategory): Skill[] => {
+  return category.skills.filter((skill) => skill.show === true);
+};
 </script>
 
 <style scoped>

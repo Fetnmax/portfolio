@@ -7,38 +7,64 @@
           "id": "html5",
           "name": "HTML5",
           "icon": "vscode-icons:file-type-html",
-          "level": 95
+          "level": 95,
+          "show": true
         },
         {
           "id": "css3",
           "name": "CSS3",
           "icon": "vscode-icons:file-type-css",
-          "level": 90
+          "level": 90,
+          "show": true
         },
         {
           "id": "javascript",
           "name": "JavaScript",
           "icon": "logos:javascript",
-          "level": 95
+          "level": 95,
+          "show": true
         },
         {
           "id": "typescript",
           "name": "TypeScript",
           "icon": "logos:typescript-icon",
-          "level": 92
+          "level": 92,
+          "show": true
         },
-        { "id": "vuejs", "name": "Vue.js", "icon": "logos:vue", "level": 85 },
+        {
+          "id": "vuejs",
+          "name": "Vue.js",
+          "icon": "logos:vue",
+          "level": 85,
+          "show": true
+        },
         {
           "id": "tailwindcss",
           "name": "Tailwind CSS",
           "icon": "logos:tailwindcss-icon",
-          "level": 85
+          "level": 85,
+          "show": true
         },
         {
           "id": "svelte",
           "name": "Svelte",
           "icon": "logos:svelte-icon",
-          "level": 90
+          "level": 90,
+          "show": true
+        },
+        {
+          "id": "nuxtjs",
+          "name": "Nuxt.js",
+          "icon": "logos:nuxt-icon",
+          "level": 80,
+          "show": false
+        },
+        {
+          "id": "threejs",
+          "name": "Three.js",
+          "icon": "logos:threejs",
+          "level": 75,
+          "show": false
         }
       ]
     },
@@ -49,14 +75,22 @@
           "id": "nodejs",
           "name": "Node.js",
           "icon": "logos:nodejs-icon",
-          "level": 75
+          "level": 75,
+          "show": true
         },
-        { "id": "php", "name": "PHP", "icon": "logos:php", "level": 85 },
+        {
+          "id": "php",
+          "name": "PHP",
+          "icon": "logos:php",
+          "level": 85,
+          "show": true
+        },
         {
           "id": "laravel",
           "name": "Laravel",
           "icon": "logos:laravel",
-          "level": 90
+          "level": 90,
+          "show": true
         }
       ]
     },
@@ -67,32 +101,60 @@
           "id": "postgresql",
           "name": "PostgreSQL",
           "icon": "logos:postgresql",
-          "level": 80
+          "level": 80,
+          "show": true
         },
         {
           "id": "sqlite",
           "name": "SQLite",
           "icon": "logos:sqlite",
-          "level": 80
+          "level": 80,
+          "show": true
         },
         {
           "id": "mongodb",
           "name": "MongoDB",
           "icon": "logos:mongodb-icon",
-          "level": 75
+          "level": 75,
+          "show": true
         },
-        { "id": "mysql", "name": "MySQL", "icon": "logos:mysql", "level": 85 }
+        {
+          "id": "mysql",
+          "name": "MySQL",
+          "icon": "logos:mysql",
+          "level": 85,
+          "show": true
+        }
+      ]
+    },
+    {
+      "name": "Langages Systèmes & Compilés",
+      "skills": [
+        {
+          "id": "c",
+          "name": "C",
+          "icon": "logos:c",
+          "level": 70,
+          "show": false
+        }
       ]
     },
     {
       "name": "Outils & DevOps",
       "skills": [
-        { "id": "git", "name": "Git", "icon": "logos:git-icon", "level": 90 },
+        {
+          "id": "git",
+          "name": "Git",
+          "icon": "logos:git-icon",
+          "level": 90,
+          "show": true
+        },
         {
           "id": "docker",
           "name": "Docker",
           "icon": "logos:docker-icon",
-          "level": 85
+          "level": 85,
+          "show": true
         }
       ]
     }

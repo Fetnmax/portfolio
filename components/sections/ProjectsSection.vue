@@ -41,6 +41,30 @@
           </div>
         </div>
       </div>
+
+      <!-- Filtres de technologies -->
+      <div class="filters-container">
+        <button
+          class="filter-button"
+          :class="{ active: !activeFilters.length }"
+          @click="clearFilters"
+        >
+          Tous
+        </button>
+        <button
+          v-for="tech in usedTechnologies"
+          :key="tech.id"
+          class="filter-button"
+          :class="{ active: activeFilters.includes(tech.id) }"
+          @click="toggleFilter(tech.id)"
+        >
+          <span class="tech-icon" v-if="tech.icon">
+            <Icon :name="tech.icon" size="18px" />
+          </span>
+          {{ tech.name }}
+        </button>
+      </div>
+
       <div class="sphere-container" ref="container"></div>
     </div>
 
@@ -122,6 +146,7 @@ export default {
     const showHelp = ref(false);
     const hoveredProject = ref(null);
     const hoverPosition = ref({ x: 0, y: 0 });
+    const activeFilters = ref([]);
 
     // Référence pour stocker les objets Three.js
     let scene, camera, renderer, controls;
@@ -143,6 +168,113 @@ export default {
       }
       // Si l'ID n'est pas trouvé, retourner l'ID lui-même
       return techId;
+    };
+
+    // Fonction pour obtenir les technologies utilisées dans les projets
+    const getUsedTechnologies = () => {
+      const techIds = new Set();
+
+      // Collecter tous les IDs de technologies utilisées dans les projets
+      projects.forEach((project) => {
+        if (project.technologies) {
+          project.technologies.forEach((techId) => {
+            techIds.add(techId);
+          });
+        }
+      });
+
+      // Créer un tableau d'objets de technologies avec leurs détails
+      const technologies = [];
+      techIds.forEach((id) => {
+        // Rechercher les détails de la technologie
+        let found = false;
+        for (const category of skillsData.skillCategories) {
+          const skill = category.skills.find((skill) => skill.id === id);
+          if (skill) {
+            technologies.push({
+              id: skill.id,
+              name: skill.name,
+              icon: skill.icon,
+            });
+            found = true;
+            break;
+          }
+        }
+
+        // Si la technologie n'est pas trouvée dans skills.json, ajouter avec l'ID uniquement
+        if (!found) {
+          technologies.push({
+            id: id,
+            name: id.charAt(0).toUpperCase() + id.slice(1),
+            icon: null,
+          });
+        }
+      });
+
+      // Trier les technologies par nom
+      return technologies.sort((a, b) => a.name.localeCompare(b.name));
+    };
+
+    // Récupérer les technologies utilisées
+    const usedTechnologies = getUsedTechnologies();
+
+    // Filtrer les projets en fonction des filtres actifs
+    const filteredProjects = computed(() => {
+      if (!activeFilters.value.length) {
+        return projects;
+      }
+
+      return projects.filter((project) => {
+        // Un projet est inclus s'il utilise AU MOINS UNE des technologies filtrées
+        return project.technologies.some((techId) =>
+          activeFilters.value.includes(techId)
+        );
+      });
+    });
+
+    // Activer/désactiver un filtre
+    const toggleFilter = (techId) => {
+      const index = activeFilters.value.indexOf(techId);
+      if (index === -1) {
+        activeFilters.value.push(techId);
+      } else {
+        activeFilters.value.splice(index, 1);
+      }
+      updateVisibleProjects();
+    };
+
+    // Effacer tous les filtres
+    const clearFilters = () => {
+      activeFilters.value = [];
+      updateVisibleProjects();
+    };
+
+    // Mettre à jour la visibilité des projets dans la sphère
+    const updateVisibleProjects = () => {
+      const filtered = filteredProjects.value;
+
+      // Parcourir tous les points et mettre à jour leur visibilité
+      projectPoints.forEach((point) => {
+        const project = point.userData.project;
+        const isVisible = filtered.some((p) => p.id === project.id);
+
+        // Mettre à jour la visibilité du point et de son halo
+        point.visible = isVisible;
+
+        // Trouver le halo correspondant et le mettre à jour
+        const halo = scene.children.find(
+          (child) =>
+            child.type === "Mesh" &&
+            child.position.x === point.position.x &&
+            child.position.y === point.position.y &&
+            child.position.z === point.position.z &&
+            child !== point
+        );
+
+        if (halo) {
+          halo.visible = isVisible;
+        }
+      });
     };
 
     // Initialisation de Three.js
@@ -330,6 +462,9 @@ export default {
         halo.position.copy(position);
         scene.add(halo);
       });
+
+      // Appliquer les filtres initiaux (tous les projets visibles par défaut)
+      updateVisibleProjects();
     };
 
     // Gestion du redimensionnement de la fenêtre
@@ -497,6 +632,10 @@ export default {
       hoveredProject,
       previewStyle,
       getTechnologyName,
+      usedTechnologies,
+      activeFilters,
+      toggleFilter,
+      clearFilters,
     };
   },
 };
@@ -524,10 +663,63 @@ export default {
 
 .section-title {
   font-size: 2.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   text-align: center;
   position: relative;
   display: inline-block;
+}
+
+/* Styles pour les filtres */
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  max-width: 900px;
+}
+
+.filter-button {
+  background-color: var(--bg-card);
+  /* border: 1px solid var(--modal-border-color); */
+  color: var(--text-color);
+  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 100px;
+  text-align: center;
+  height: 38px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.filter-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: var(--bg-light);
+}
+
+.filter-button.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.tech-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-right: 2px;
 }
 
 .sphere-container {
@@ -874,6 +1066,18 @@ export default {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Media queries pour la responsivité des filtres */
+@media (max-width: 768px) {
+  .filters-container {
+    gap: 0.5rem;
+  }
+
+  .filter-button {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
   }
 }
 </style>
