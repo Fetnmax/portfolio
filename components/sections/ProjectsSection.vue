@@ -498,7 +498,21 @@ export default {
 
     // Ajout des points pour les projets
     const addProjectPoints = () => {
-      projects.forEach((project) => {
+      // Palette de couleurs variées pour les points
+      const colorPalette = [
+        0xff3333, // Rouge (couleur originale)
+        0xff9900, // Orange
+        0x66ff66, // Vert clair
+        0xffcc33, // Jaune orangé
+        0xcc66ff, // Violet
+        0xff66cc, // Rose
+        0x33ffcc, // Turquoise
+        0xff9966, // Pêche
+        0xff5500, // Orange brûlé
+        0xffff66, // Jaune citron
+      ];
+
+      projects.forEach((project, index) => {
         // Normalisation de la position pour être sur la sphère
         const position = new THREE.Vector3(
           project.position.x,
@@ -506,9 +520,17 @@ export default {
           project.position.z
         ).normalize();
 
-        // Création du point
-        const geometry = new THREE.SphereGeometry(0.02, 16, 16);
-        const material = new THREE.MeshBasicMaterial({ color: 0xff3333 });
+        // Sélection d'une couleur de la palette (en boucle si plus de projets que de couleurs)
+        const pointColor = colorPalette[index % colorPalette.length];
+
+        // Création du point (légèrement plus grand: 0.028)
+        const geometry = new THREE.SphereGeometry(0.028, 16, 16);
+        // Matériau plus opaque (1.0 au lieu de la valeur par défaut)
+        const material = new THREE.MeshBasicMaterial({
+          color: pointColor,
+          transparent: false,
+          opacity: 1.0,
+        });
         const point = new THREE.Mesh(geometry, material);
 
         point.position.copy(position);
@@ -517,13 +539,19 @@ export default {
         scene.add(point);
         projectPoints.push(point);
 
-        // Ajout d'un halo autour du point
-        const haloGeometry = new THREE.SphereGeometry(0.025, 16, 16);
+        // Ajout d'un halo autour du point (avec couleur assortie)
+        const haloGeometry = new THREE.SphereGeometry(0.035, 16, 16);
+
+        // Créer une version plus claire de la même couleur pour le halo
+        const haloColor = new THREE.Color(pointColor);
+        haloColor.offsetHSL(0, -0.2, 0.2); // Légèrement désaturé et plus lumineux
+
         const haloMaterial = new THREE.MeshBasicMaterial({
-          color: 0xff5555,
+          color: haloColor,
           transparent: true,
-          opacity: 0.5,
+          opacity: 0.65, // Halo également plus opaque (0.65 au lieu de 0.5)
         });
+
         const halo = new THREE.Mesh(haloGeometry, haloMaterial);
 
         halo.position.copy(position);
