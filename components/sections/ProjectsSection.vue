@@ -338,10 +338,14 @@ export default {
 
     // Création de la sphère avec des lignes de grille
     const createSphere = () => {
-      // Création de la géométrie de la sphère
-      const geometry = new THREE.SphereGeometry(1, 32, 32);
+      // Récupération de la couleur des lignes depuis le CSS
+      const lineColor = new THREE.Color(
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--primary-color")
+          .trim() || "#3182ce"
+      );
 
-      // Matériau transparent pour la sphère
+      // Création du matériau de base pour la sphère
       const material = new THREE.MeshBasicMaterial({
         color: 0x1a1a3a,
         transparent: true,
@@ -349,84 +353,147 @@ export default {
         wireframe: false,
       });
 
+      // 1. Sphère principale (presque invisible)
+      const geometry = new THREE.SphereGeometry(1, 32, 32);
       sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
 
-      // Ajout des lignes horizontales (latitudes)
-      const latitudeCount = 15;
-      for (let i = 0; i <= latitudeCount; i++) {
-        const phi = (Math.PI * i) / latitudeCount;
-        const radius = Math.sin(phi);
-        const y = Math.cos(phi);
+      // 2. Deux sphères wireframe pour garantir la visibilité de toutes les lignes
+      // Première sphère wireframe légèrement plus grande
+      const wireframeGeometry1 = new THREE.SphereGeometry(1.001, 32, 32);
+      const wireframeMaterial1 = new THREE.MeshBasicMaterial({
+        color: lineColor,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.2,
+        depthTest: false, // Désactive le test de profondeur pour cette sphère
+      });
+      const wireframeSphere1 = new THREE.Mesh(
+        wireframeGeometry1,
+        wireframeMaterial1
+      );
+      scene.add(wireframeSphere1);
 
-        if (radius > 0.01) {
-          // Éviter les cercles trop petits aux pôles
-          const segments = 64;
-          const points = [];
+      // Deuxième sphère wireframe légèrement plus petite avec mode depthTest activé
+      const wireframeGeometry2 = new THREE.SphereGeometry(0.999, 32, 32);
+      const wireframeMaterial2 = new THREE.MeshBasicMaterial({
+        color: lineColor,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.15,
+      });
+      const wireframeSphere2 = new THREE.Mesh(
+        wireframeGeometry2,
+        wireframeMaterial2
+      );
+      scene.add(wireframeSphere2);
 
-          for (let j = 0; j <= segments; j++) {
-            const theta = (j / segments) * Math.PI * 2;
-            const x = radius * Math.cos(theta);
-            const z = radius * Math.sin(theta);
-            points.push(new THREE.Vector3(x, y, z));
-          }
+      // 3. Lignes principales (méridiens et parallèles) avec des LineSegments pour une meilleure visibilité
+      // Ces lignes sont créées explicitement pour garantir qu'elles soient toujours visibles
 
-          const lineColor = getComputedStyle(
-            document.documentElement
-          ).getPropertyValue("--primary-color");
-
-          const latitudeGeometry = new THREE.BufferGeometry().setFromPoints(
-            points
-          );
-          const latitudeLine = new THREE.Line(
-            latitudeGeometry,
-            new THREE.LineBasicMaterial({
-              color: lineColor,
-              transparent: true,
-              opacity: 0.3,
-            })
-          );
-
-          scene.add(latitudeLine);
-        }
-      }
-
-      // Ajout des lignes verticales (longitudes)
-      const longitudeCount = 15;
+      // Méridiens (longitudes)
+      const longitudeCount = 12;
       for (let i = 0; i < longitudeCount; i++) {
         const theta = (2 * Math.PI * i) / longitudeCount;
 
+        // Création de la géométrie pour cette ligne de longitude
+        const longitudeGeometry = new THREE.BufferGeometry();
         const points = [];
-        for (let j = 0; j <= 64; j++) {
-          const phi = (Math.PI * j) / 64;
-          const radius = 1;
 
-          const x = radius * Math.sin(phi) * Math.cos(theta);
-          const y = radius * Math.cos(phi);
-          const z = radius * Math.sin(phi) * Math.sin(theta);
-
+        // Générer les points avec une densité élevée pour des courbes lisses
+        const segmentCount = 100;
+        for (let j = 0; j <= segmentCount; j++) {
+          const phi = (Math.PI * j) / segmentCount;
+          const x = Math.sin(phi) * Math.cos(theta);
+          const y = Math.cos(phi);
+          const z = Math.sin(phi) * Math.sin(theta);
           points.push(new THREE.Vector3(x, y, z));
         }
 
-        const lineColor = getComputedStyle(
-          document.documentElement
-        ).getPropertyValue("--primary-color");
+        longitudeGeometry.setFromPoints(points);
 
-        const longitudeGeometry = new THREE.BufferGeometry().setFromPoints(
-          points
-        );
+        // Création de la ligne avec LineSegments pour un rendu plus fin
+        const lineMaterial = new THREE.LineBasicMaterial({
+          color: lineColor,
+          transparent: true,
+          opacity: 0.4,
+          depthTest: false, // Désactive le test de profondeur pour toujours voir la ligne
+          linewidth: 1.5, // Notez que cette propriété n'est pas supportée par certains renderers WebGL
+        });
 
-        const longitudeLine = new THREE.Line(
-          longitudeGeometry,
-          new THREE.LineBasicMaterial({
-            color: lineColor,
-            transparent: true,
-            opacity: 0.3,
-          })
-        );
-
-        scene.add(longitudeLine);
+        const line = new THREE.Line(longitudeGeometry, lineMaterial);
+        scene.add(line);
       }
+
+      // Parallèles (latitudes)
+      const latitudeCount = 10;
+      for (let i = 0; i <= latitudeCount; i++) {
+        const phi = (Math.PI * i) / latitudeCount;
+        const y = Math.cos(phi);
+        const radius = Math.sin(phi);
+
+        if (radius < 0.01) continue; // Éviter les cercles trop petits aux pôles
+
+        // Création de la géométrie pour cette ligne de latitude
+        const latitudeGeometry = new THREE.BufferGeometry();
+        const points = [];
+
+        // Générer les points avec une haute densité pour des cercles lisses
+        const segmentCount = 100;
+        for (let j = 0; j <= segmentCount; j++) {
+          const theta = (j / segmentCount) * Math.PI * 2;
+          const x = radius * Math.cos(theta);
+          const z = radius * Math.sin(theta);
+          points.push(new THREE.Vector3(x, y, z));
+        }
+
+        latitudeGeometry.setFromPoints(points);
+
+        // Création de la ligne avec LineSegments pour un rendu plus fin
+        const lineMaterial = new THREE.LineBasicMaterial({
+          color: lineColor,
+          transparent: true,
+          opacity: 0.4,
+          depthTest: false, // Désactive le test de profondeur pour toujours voir la ligne
+          linewidth: 1.5,
+        });
+
+        const line = new THREE.Line(latitudeGeometry, lineMaterial);
+        scene.add(line);
+      }
+
+      // 4. Points aux intersections principales pour renforcer la structure visuelle
+      // Points à l'équateur
+      const equatorPoints = [];
+      for (let i = 0; i < 12; i++) {
+        const theta = (Math.PI * 2 * i) / 12;
+        const x = Math.cos(theta);
+        const z = Math.sin(theta);
+        equatorPoints.push(new THREE.Vector3(x, 0, z));
+      }
+
+      // Points aux pôles et sur certaines intersections clés
+      const keyPoints = [
+        new THREE.Vector3(0, 1, 0), // Pôle nord
+        new THREE.Vector3(0, -1, 0), // Pôle sud
+      ];
+
+      // Tous les points d'intersection importants
+      const allPoints = [...equatorPoints, ...keyPoints];
+
+      // Création des points visibles aux intersections
+      allPoints.forEach((point) => {
+        const dotGeometry = new THREE.SphereGeometry(0.01, 8, 8);
+        const dotMaterial = new THREE.MeshBasicMaterial({
+          color: lineColor,
+          transparent: false,
+          opacity: 0.9,
+          depthTest: false, // Important pour voir les points même à l'arrière
+        });
+        const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+        dot.position.copy(point);
+        scene.add(dot);
+      });
     };
 
     // Ajout des points pour les projets
