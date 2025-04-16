@@ -6,16 +6,20 @@
         <div class="about-text">
           <h3>Qui suis-je ?</h3>
           <p>
-            Passionné par le développement web et les nouvelles technologies.
+            Je m'appelle Maxime JACOB-SAUSSEREAU, développeur Full Stack
+            passionné par le développement web et les nouvelles technologies.
           </p>
           <p>
-            Je suis un développeur Full Stack avec une expertise en JavaScript,
-            Vue.js, et Node.js. J'aime créer des applications web performantes
-            et esthétiques qui offrent une excellente expérience utilisateur.
+            Curieux de nature, j’aime explorer les technologies frontend comme
+            Vue.js, Nuxt.js ou Svelte, tout en m'intéressant de près aux bases
+            de données, au backend et aux enjeux DevOps.
           </p>
           <p>
-            Mon approche combine créativité et rigueur technique pour répondre
-            aux besoins des projets modernes.
+            Issu d’un BUT Informatique, j’ai eu l’occasion de concevoir des
+            projets concrets, notamment un éditeur d’algorithmes en ligne.
+            Chaque réalisation est pour moi une opportunité d’apprendre, de
+            repousser mes limites et de proposer des solutions soignées, aussi
+            bien sur le fond que sur la forme.
           </p>
         </div>
 
@@ -52,26 +56,22 @@ const activeItem = ref<number | null>(null);
 
 const timelineItems = ref([
   {
-    date: "2023 - Présent",
-    title: "Développeur Full Stack",
+    date: "Septembre 2024 - Présent",
+    title: "Alternance Développeur Full Stack - Sayaris",
     description:
-      "Développement d'applications web modernes avec Vue.js et Node.js.",
+      "Développement d'une application web avec Laravel et Vue.js, intégration de fonctionnalités avancées.",
   },
   {
-    date: "2021 - 2023",
-    title: "Développeur Front-End",
-    description: "Création d'interfaces utilisateur réactives et accessibles.",
-  },
-  {
-    date: "2019 - 2021",
-    title: "Formation Développement Web",
+    date: "Avril 2024 - Juin 2024",
+    title: "Stage Développeur - SolidPepper",
     description:
-      "Apprentissage des technologies web modernes et bonnes pratiques.",
+      "Développement d’une application console en C# et d’un projet angular",
   },
   {
-    date: "2022 - 2025",
-    title: "BUT ",
-    description: "Premiers pas dans le monde du développement web.",
+    date: "2022 - Présent",
+    title: "BUT Informatique",
+    description:
+      "Prépare aux métiers de l’informatique tout en répondant aux exigences des entreprises.",
   },
 ]);
 </script>
