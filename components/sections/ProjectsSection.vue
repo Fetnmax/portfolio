@@ -73,7 +73,10 @@
       <div class="modal-content">
         <button class="close-button" @click="closeModal">&times;</button>
 
-        <div class="modal-grid">
+        <div
+          class="modal-grid"
+          :class="{ 'single-column': !selectedProject.image }"
+        >
           <div class="project-info">
             <h3>{{ selectedProject.title }}</h3>
             <p class="project-description">{{ selectedProject.description }}</p>
@@ -1294,6 +1297,10 @@ export default {
   gap: 2rem;
 }
 
+.modal-grid.single-column {
+  grid-template-columns: 1fr;
+}
+
 .project-description {
   color: var(--text-color);
   font-size: 1rem;
@@ -1492,6 +1499,37 @@ export default {
   .project-image-container {
     order: -1;
     margin-bottom: 1rem;
+  }
+}
+
+/* Nouveaux styles pour la disposition adaptative */
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* Quand pas d'image, utiliser toute la largeur */
+.modal-grid.single-column {
+  grid-template-columns: 1fr;
+}
+
+/* Style spécial pour les éléments dans le mode sans image */
+.single-column .project-info {
+  max-width: 100%;
+}
+
+.single-column .project-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* Ajustements responsifs */
+@media (max-width: 768px) {
+  .single-column .project-details {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 </style>
