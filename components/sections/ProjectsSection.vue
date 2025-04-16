@@ -72,41 +72,94 @@
     <div class="project-modal" v-if="selectedProject" @click.self="closeModal">
       <div class="modal-content">
         <button class="close-button" @click="closeModal">&times;</button>
-        <h3>{{ selectedProject.title }}</h3>
-        <p>{{ selectedProject.description }}</p>
-        <div class="project-details">
-          <div class="technologies">
-            <h4>Technologies</h4>
-            <ul>
-              <li
-                v-for="(techId, index) in selectedProject.technologies"
-                :key="index"
+
+        <div class="modal-grid">
+          <div class="project-info">
+            <h3>{{ selectedProject.title }}</h3>
+            <p class="project-description">{{ selectedProject.description }}</p>
+
+            <div class="project-details">
+              <div class="technologies">
+                <h4>Technologies</h4>
+                <div class="tech-tags">
+                  <span
+                    v-for="(techId, index) in selectedProject.technologies"
+                    :key="index"
+                    class="tech-tag"
+                  >
+                    <Icon
+                      v-if="getTechIcon(techId)"
+                      :name="getTechIcon(techId)"
+                      size="16px"
+                      class="tech-tag-icon"
+                    />
+                    {{ getTechnologyName(techId) }}
+                  </span>
+                </div>
+              </div>
+
+              <div
+                class="links"
+                v-if="selectedProject.links && selectedProject.links.length > 0"
               >
-                {{ getTechnologyName(techId) }}
-              </li>
-            </ul>
-          </div>
-          <div
-            class="links"
-            v-if="selectedProject.links && selectedProject.links.length > 0"
-          >
-            <h4>Liens</h4>
-            <div class="link-buttons">
-              <a
-                v-for="(link, index) in selectedProject.links"
-                :key="index"
-                :href="link.url"
-                target="_blank"
-                class="link-button"
-              >
-                {{ link.name }}
-              </a>
+                <h4>Liens</h4>
+                <div class="link-buttons">
+                  <a
+                    v-for="(link, index) in selectedProject.links"
+                    :key="index"
+                    :href="link.url"
+                    target="_blank"
+                    class="link-button"
+                    :class="{
+                      'github-link': link.name.toLowerCase().includes('github'),
+                      'live-link': link.name.toLowerCase().includes('live'),
+                    }"
+                  >
+                    <Icon
+                      v-if="getLinkIcon(link.name)"
+                      :name="getLinkIcon(link.name)"
+                      size="18px"
+                      class="link-icon"
+                    />
+                    {{ link.name }}
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
+
+          <div class="project-image-container" v-if="selectedProject.image">
+            <transition name="image-fade">
+              <div class="image-wrapper">
+                <img
+                  :src="selectedProject.image"
+                  :alt="selectedProject.title"
+                  class="project-image"
+                />
+                <div class="image-overlay" @click.stop="openFullImage">
+                  <span class="zoom-hint">
+                    <Icon name="ph:magnifying-glass-plus-bold" size="24px" />
+                    Cliquez pour agrandir
+                  </span>
+                </div>
+              </div>
+            </transition>
+          </div>
         </div>
-        <div class="project-image" v-if="selectedProject.image">
-          <img :src="selectedProject.image" :alt="selectedProject.title" />
-        </div>
+      </div>
+    </div>
+
+    <!-- Modal pour l'image en plein écran -->
+    <div class="fullscreen-modal" v-if="showFullImage" @click="closeFullImage">
+      <div class="fullscreen-content" @click.stop>
+        <button class="close-fullscreen" @click="closeFullImage">
+          &times;
+        </button>
+        <img
+          :src="selectedProject?.image"
+          :alt="selectedProject?.title"
+          class="fullscreen-image"
+        />
       </div>
     </div>
 
@@ -134,7 +187,7 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { onMounted, ref, onBeforeUnmount, computed } from "vue";
+import { onMounted, ref, onBeforeUnmount, computed, nextTick } from "vue";
 import projectsData from "../../data/projects.json";
 import skillsData from "../../data/skills.json";
 
@@ -147,6 +200,7 @@ export default {
     const hoveredProject = ref(null);
     const hoverPosition = ref({ x: 0, y: 0 });
     const activeFilters = ref([]);
+    const showFullImage = ref(false);
 
     // Référence pour stocker les objets Three.js
     let scene, camera, renderer, controls;
@@ -168,6 +222,58 @@ export default {
       }
       // Si l'ID n'est pas trouvé, retourner l'ID lui-même
       return techId;
+    };
+
+    // Fonction pour obtenir l'icône d'une technologie
+    const getTechIcon = (techId) => {
+      for (const category of skillsData.skillCategories) {
+        const skill = category.skills.find((skill) => skill.id === techId);
+        if (skill && skill.icon) {
+          return skill.icon;
+        }
+      }
+      return null;
+    };
+
+    // Fonction pour obtenir l'icône associée à un lien
+    const getLinkIcon = (linkName) => {
+      const name = linkName.toLowerCase();
+      if (name.includes("github")) {
+        return "mdi:github";
+      } else if (
+        name.includes("live") ||
+        name.includes("site") ||
+        name.includes("demo")
+      ) {
+        return "ph:globe-bold";
+      } else if (name.includes("youtube") || name.includes("video")) {
+        return "mdi:youtube";
+      } else if (name.includes("doc")) {
+        return "ic:baseline-description";
+      }
+      return "ph:link-bold";
+    };
+
+    // Fonction pour ouvrir l'image en plein écran
+    const openFullImage = (event) => {
+      // Arrêter la propagation de l'événement pour éviter les conflits
+      if (event) {
+        event.stopPropagation();
+      }
+
+      // Log pour débogage
+      console.log("Fonction openFullImage appelée");
+
+      // Utiliser nextTick pour s'assurer que le changement d'état est appliqué après le rendu
+      nextTick(() => {
+        showFullImage.value = true;
+        console.log("showFullImage mis à", showFullImage.value);
+      });
+    };
+
+    // Fonction pour fermer l'image en plein écran
+    const closeFullImage = () => {
+      showFullImage.value = false;
     };
 
     // Fonction pour obtenir les technologies utilisées dans les projets
@@ -731,6 +837,11 @@ export default {
       activeFilters,
       toggleFilter,
       clearFilters,
+      showFullImage,
+      openFullImage,
+      closeFullImage,
+      getTechIcon,
+      getLinkIcon,
     };
   },
 };
@@ -1173,6 +1284,214 @@ export default {
   .filter-button {
     font-size: 0.8rem;
     padding: 0.3rem 0.8rem;
+  }
+}
+
+/* Nouveaux styles de la modale */
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.project-description {
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tech-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  background-color: var(--bg-light);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.tech-tag:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.tech-tag-icon {
+  opacity: 0.8;
+}
+
+.link-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.github-link {
+  background-color: #24292e;
+  color: #fff;
+}
+
+.live-link {
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+}
+
+.link-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.link-icon {
+  opacity: 0.9;
+}
+
+.project-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.image-wrapper:hover {
+  transform: scale(1.02);
+}
+
+.project-image {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-wrapper:hover .image-overlay {
+  opacity: 1;
+}
+
+.zoom-hint {
+  color: white;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+}
+
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Valeur très élevée pour s'assurer qu'elle est au-dessus de tout */
+  backdrop-filter: blur(10px);
+}
+
+.fullscreen-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.fullscreen-image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 5px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+}
+
+.close-fullscreen {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.close-fullscreen:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.image-fade-enter-active,
+.image-fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.image-fade-enter,
+.image-fade-leave-to {
+  opacity: 0;
+}
+
+/* Styles responsifs pour la modale */
+@media (max-width: 768px) {
+  .modal-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .project-image-container {
+    order: -1;
+    margin-bottom: 1rem;
   }
 }
 </style>
