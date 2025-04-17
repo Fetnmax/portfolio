@@ -39,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import skillsData from "~/data/skills.json";
 
 interface Skill {
