@@ -3,12 +3,12 @@
     <div class="section-content">
       <div class="title-container">
         <h2 class="section-title">Projets</h2>
-        <div class="help-container">
-          <button
-            class="help-button"
-            @mouseenter="showHelp = true"
-            @mouseleave="showHelp = false"
-          >
+        <div
+          class="help-container"
+          @mouseenter="showHelp = true"
+          @mouseleave="showHelp = false"
+        >
+          <button class="help-button">
             <svg
               viewBox="0 0 1024 1024"
               version="1.1"
@@ -23,20 +23,61 @@
           <!-- Tooltip d'aide -->
           <div class="help-tooltip" v-if="showHelp">
             <div class="tooltip-content">
-              <h3>Comment ça marche ?</h3>
-              <p>
-                Cette sphère interactive représente mes projets. Chaque point
-                rouge est un projet sur lequel vous pouvez cliquer pour voir
-                plus de détails.
-              </p>
-              <ul>
-                <li>
-                  Faites tourner la sphère en la faisant glisser avec votre
-                  souris
-                </li>
-                <li>Survolez un point rouge pour voir le nom du projet</li>
-                <li>Cliquez sur un point pour ouvrir les détails du projet</li>
-              </ul>
+              <h3>
+                <Icon name="carbon:globe" size="24px" class="tooltip-icon" />
+                Comment ça marche ?
+              </h3>
+
+              <div class="tooltip-description">
+                Cette sphère interactive représente l'ensemble de mes projets
+                dans un univers navigable.
+              </div>
+
+              <div class="tooltip-steps">
+                <div class="tooltip-step">
+                  <div class="step-icon">
+                    <Icon name="tabler:drag-drop" size="20px" />
+                  </div>
+                  <div class="step-text">
+                    Faites glisser pour explorer la sphère dans toutes les
+                    directions
+                  </div>
+                </div>
+
+                <div class="tooltip-step">
+                  <div class="step-icon">
+                    <Icon name="ph:cursor-fill" size="20px" />
+                  </div>
+                  <div class="step-text">
+                    Survolez un point coloré pour voir le nom et les
+                    technologies du projet
+                  </div>
+                </div>
+
+                <div class="tooltip-step">
+                  <div class="step-icon">
+                    <Icon name="ph:hand-pointing-fill" size="20px" />
+                  </div>
+                  <div class="step-text">
+                    Cliquez sur un point pour ouvrir les détails complets du
+                    projet
+                  </div>
+                </div>
+
+                <div class="tooltip-step">
+                  <div class="step-icon">
+                    <Icon name="carbon:filter" size="20px" />
+                  </div>
+                  <div class="step-text">
+                    Utilisez les filtres pour explorer par technologie
+                  </div>
+                </div>
+              </div>
+
+              <div class="tooltip-note">
+                <Icon name="ph:info" size="16px" /> Chaque point représente un
+                projet différent avec une couleur unique.
+              </div>
             </div>
           </div>
         </div>
@@ -1157,70 +1198,103 @@ export default {
 .help-tooltip {
   position: absolute;
   top: 40px;
-  right: -200px;
-  background-color: var(--secondary-color);
-  border-radius: 10px;
-  padding: 1.5rem;
-  width: 300px;
+  right: -270px;
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 1.75rem;
+  width: 360px;
   z-index: 100;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--primary-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--modal-border-color);
+  backdrop-filter: blur(10px);
+  animation: fadeSlideIn 0.3s ease-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tooltip-content {
   position: relative;
-  font-size: 0.9rem;
 }
 
-.close-tooltip {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: var(--primary-color);
-  border: 2px solid var(--primary-color);
+.tooltip-content h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--modal-border-color);
+  padding-bottom: 0.75rem;
+}
+
+.tooltip-icon {
+  color: var(--primary-color);
+}
+
+.tooltip-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
   color: var(--text-color);
-  font-size: 1.2rem;
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
+}
+
+.tooltip-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tooltip-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.step-icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  transition: background-color 0.3s;
+  flex-shrink: 0;
 }
 
-.close-tooltip:hover {
-  background-color: var(--secondary-color);
-}
-
-.help-tooltip h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.8rem;
-  color: var(--primary-color);
-}
-
-.help-tooltip p {
-  margin-bottom: 0.8rem;
+.step-text {
+  font-size: 0.9rem;
   line-height: 1.4;
 }
 
-.help-tooltip ul {
-  list-style: none;
-  padding: 0;
+.tooltip-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.75rem;
+  background-color: var(--bg-light);
+  border-radius: 8px;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
 }
 
-.help-tooltip li {
-  margin-bottom: 0.4rem;
-  padding-left: 1rem;
-  position: relative;
-}
-
-.help-tooltip li::before {
-  content: "•";
-  color: var(--primary-color);
-  position: absolute;
-  left: 0;
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .help-tooltip {
+    right: -120px;
+    width: 280px;
+  }
 }
 
 .project-preview {
