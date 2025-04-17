@@ -5,7 +5,10 @@
         <h2 class="section-title">Projets</h2>
         <div
           class="help-container"
-          @mouseenter="showHelp = true"
+          @mouseenter="
+            showHelp = true;
+            hasSeenHelp = true;
+          "
           @mouseleave="showHelp = false"
         >
           <button class="help-button">
@@ -18,6 +21,7 @@
                 d="M512 81.408a422.4 422.4 0 1 0 422.4 422.4A422.4 422.4 0 0 0 512 81.408z m26.624 629.76a45.056 45.056 0 0 1-31.232 12.288 42.496 42.496 0 0 1-31.232-12.8 41.984 41.984 0 0 1-12.8-30.72 39.424 39.424 0 0 1 12.8-30.72 42.496 42.496 0 0 1 31.232-12.288 43.008 43.008 0 0 1 31.744 12.288 39.424 39.424 0 0 1 12.8 30.72 43.008 43.008 0 0 1-13.312 31.744z m87.04-235.52a617.472 617.472 0 0 1-51.2 47.104 93.184 93.184 0 0 0-25.088 31.232 80.896 80.896 0 0 0-9.728 39.936v10.24h-64v-10.24a119.808 119.808 0 0 1 12.288-57.344A311.296 311.296 0 0 1 555.52 460.8l10.24-11.264a71.168 71.168 0 0 0 16.896-44.032A69.632 69.632 0 0 0 563.2 358.4a69.632 69.632 0 0 0-51.2-17.92 67.072 67.072 0 0 0-58.88 26.112 102.4 102.4 0 0 0-16.384 61.44h-61.44a140.288 140.288 0 0 1 37.888-102.4 140.8 140.8 0 0 1 104.96-38.4 135.68 135.68 0 0 1 96.256 29.184 108.032 108.032 0 0 1 36.352 86.528 116.736 116.736 0 0 1-25.088 73.216z"
               />
             </svg>
+            <div v-if="!hasSeenHelp" class="pulse-ring"></div>
           </button>
 
           <!-- Tooltip d'aide -->
@@ -231,7 +235,14 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { onMounted, ref, onBeforeUnmount, computed, nextTick } from "vue";
+import {
+  onMounted,
+  ref,
+  onBeforeUnmount,
+  computed,
+  nextTick,
+  watch,
+} from "vue";
 import projectsData from "../../data/projects.json";
 import skillsData from "../../data/skills.json";
 
@@ -241,6 +252,7 @@ export default {
     const container = ref(null);
     const selectedProject = ref(null);
     const showHelp = ref(false);
+    const hasSeenHelp = ref(false); // Nouvelle ref pour suivre si l'utilisateur a vu l'aide
     const hoveredProject = ref(null);
     const hoverPosition = ref({ x: 0, y: 0 });
     const activeFilters = ref([]);
@@ -854,6 +866,18 @@ export default {
     // Initialisation au montage du composant
     onMounted(() => {
       initThree();
+
+      // Vérifier le localStorage pour voir si l'utilisateur a déjà vu l'aide
+      if (localStorage.getItem("hasSeenProjectsHelp") === "true") {
+        hasSeenHelp.value = true;
+      }
+    });
+
+    // Surveiller les changements de hasSeenHelp pour les sauvegarder
+    watch(hasSeenHelp, (newValue) => {
+      if (newValue) {
+        localStorage.setItem("hasSeenProjectsHelp", "true");
+      }
     });
 
     // Nettoyage avant de démonter le composant
@@ -874,6 +898,7 @@ export default {
       selectedProject,
       closeModal,
       showHelp,
+      hasSeenHelp, // Exposer la nouvelle ref
       hoveredProject,
       previewStyle,
       getTechnologyName,
@@ -1182,6 +1207,8 @@ export default {
   justify-content: center;
   transition: all 0.3s ease;
   padding: 0;
+  position: relative; /* Ajout pour positionnement correct du pulse-ring */
+  z-index: 2;
 }
 
 .help-button svg {
@@ -1189,10 +1216,42 @@ export default {
   height: 24px;
   fill: var(--text-color);
   color: var(--background-color);
+  position: relative;
+  z-index: 2;
 }
 
 .help-button:hover {
   transform: scale(1.1);
+}
+
+/* Nouveau style pour le pulse-ring */
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  animation: pulse 1.5s infinite;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.8;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
 }
 
 .help-tooltip {
