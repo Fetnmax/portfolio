@@ -5,11 +5,13 @@
 
       <div class="skills-container">
         <div
-          v-for="(category, index) in skillCategories"
+          v-for="(category, index) in visibleCategories"
           :key="index"
           class="skill-category"
         >
-          <h3 class="category-title">{{ category.name }}</h3>
+          <h3 class="category-title">
+            {{ category.name }}
+          </h3>
           <div class="skills-grid">
             <div
               v-for="(skill, skillIndex) in visibleSkills(category)"
@@ -57,6 +59,18 @@ const skillCategories: SkillCategory[] = skillsData.skillCategories;
 // Fonction pour filtrer les compétences visibles (show: true)
 const visibleSkills = (category: SkillCategory): Skill[] => {
   return category.skills.filter((skill) => skill.show === true);
+};
+
+// Filtrer les catégories qui ont au moins une compétence visible
+const visibleCategories = computed(() => {
+  return skillCategories.filter((category) =>
+    category.skills.some((skill) => skill.show === true)
+  );
+});
+
+// Fonction pour avoir le nombre de compétences visibles
+const countVisibleSkills = (category: SkillCategory): number => {
+  return category.skills.filter((skill) => skill.show === true).length;
 };
 </script>
 
