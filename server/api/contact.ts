@@ -1,4 +1,8 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineEventHandler, readBody, getHeader } from "h3";
+
+// Stockage en mémoire pour la limitation de débit (pour développement)
+// En production, utiliser Redis ou une solution similaire
+const requestLog = new Map<string, { count: number; timestamp: number }>();
 
 interface ContactForm {
   name: string;
@@ -8,6 +12,32 @@ interface ContactForm {
 
 export default defineEventHandler(async (event) => {
   try {
+    // Obtenir l'adresse IP du client
+    const ip = getHeader(event, "x-forwarded-for") || "unknown";
+
+    // Vérifier la limite de débit (5 requêtes par heure maximum)
+    const now = Date.now();
+    const hourInMs = 60 * 60 * 1000;
+    const userLog = requestLog.get(ip) || { count: 0, timestamp: now };
+
+    // Réinitialiser le compteur si plus d'une heure s'est écoulée
+    if (now - userLog.timestamp > hourInMs) {
+      userLog.count = 0;
+      userLog.timestamp = now;
+    }
+
+    // Vérifier si la limite est atteinte
+    if (userLog.count >= 5) {
+      return {
+        success: false,
+        message: "Trop de messages envoyés. Veuillez réessayer plus tard.",
+      };
+    }
+
+    // Incrémenter le compteur
+    userLog.count++;
+    requestLog.set(ip, userLog);
+
     // Récupérer les données du formulaire depuis la requête
     const body = await readBody<ContactForm>(event);
 

@@ -56,6 +56,17 @@
               }}</span>
             </div>
 
+            <div class="form-group" style="display: none">
+              <label for="website">Website</label>
+              <input
+                type="text"
+                id="website"
+                v-model="formData.website"
+                class="form-input"
+                autocomplete="off"
+              />
+            </div>
+
             <div class="form-actions">
               <button
                 type="submit"
@@ -139,6 +150,7 @@ export default {
         name: "",
         email: "",
         message: "",
+        website: "", // Champ honeypot
       },
       errors: {
         name: "",
@@ -211,6 +223,7 @@ export default {
           name: "",
           email: "",
           message: "",
+          website: "",
         };
 
         // Afficher le message de succès
