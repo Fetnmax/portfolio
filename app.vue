@@ -1,21 +1,15 @@
 <template>
   <div>
-    <ThemeToggle />
     <NuxtPage />
   </div>
 </template>
 
 <script setup>
-import ThemeToggle from "./components/layout/ThemeToggle.vue";
 import { onMounted } from "vue";
 
 onMounted(() => {
-  const prefersDarkMode = window.matchMedia(
-    "(prefers-color-scheme: dark)"
-  ).matches;
-  const savedTheme =
-    localStorage.getItem("theme") || (prefersDarkMode ? "dark" : "light");
-  document.documentElement.setAttribute("data-theme", savedTheme);
+  // Définir le thème en mode sombre par défaut
+  document.documentElement.setAttribute("data-theme", "dark");
 });
 </script>
 
