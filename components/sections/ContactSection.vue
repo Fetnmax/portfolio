@@ -1,743 +1,555 @@
 <template>
   <section id="contact" class="contact-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Me Contacter</h2>
+    <div class="contact-container">
+      <div class="contact-header">
+        <h2 class="section-title">Contact</h2>
         <p class="section-subtitle">
-          Vous avez un projet en tête ou une question ? N'hésitez pas à me
-          contacter !
+          N'hésitez pas à me contacter pour discuter de projets ou
+          d'opportunités
         </p>
       </div>
 
-      <div class="contact-container">
-        <!-- Carte coordonnées interactive -->
-        <div class="contact-info">
-          <div class="contact-card" :class="{ 'is-flipped': isCardFlipped }">
-            <div class="contact-card-front">
-              <h3>
-                <Icon name="mdi:id-card" size="1.5rem" class="title-icon" /> Mes
-                Coordonnées
-              </h3>
-
-              <div class="contact-method">
-                <div class="contact-icon-wrapper">
-                  <Icon name="mdi:email" size="1.5rem" />
-                </div>
-                <div>
-                  <h4>Email</h4>
-                  <a href="mailto:votre.email@exemple.com"
-                    >votre.email@exemple.com</a
-                  >
-                </div>
-              </div>
-
-              <div class="contact-method">
-                <div class="contact-icon-wrapper">
-                  <Icon name="mdi:phone" size="1.5rem" />
-                </div>
-                <div>
-                  <h4>Téléphone</h4>
-                  <a href="tel:+33600000000">+33 6 00 00 00 00</a>
-                </div>
-              </div>
-
-              <div class="contact-method">
-                <div class="contact-icon-wrapper">
-                  <Icon name="mdi:map-marker" size="1.5rem" />
-                </div>
-                <div>
-                  <h4>Localisation</h4>
-                  <p>Paris, France</p>
-                </div>
-              </div>
-
-              <button class="flip-button" @click="flipCard">
-                <span>Réseaux sociaux</span>
-                <Icon name="mdi:rotate-3d-variant" size="1.2rem" />
-              </button>
+      <div class="contact-content">
+        <div class="contact-form-container">
+          <form @submit.prevent="submitForm" class="contact-form">
+            <div class="form-group">
+              <label for="name">Nom</label>
+              <input
+                type="text"
+                id="name"
+                v-model="formData.name"
+                required
+                class="form-input"
+                :class="{ 'input-error': errors.name }"
+              />
+              <span v-if="errors.name" class="error-message">{{
+                errors.name
+              }}</span>
             </div>
 
-            <div class="contact-card-back">
-              <h3>
-                <Icon
-                  name="mdi:share-variant"
-                  size="1.5rem"
-                  class="title-icon"
-                />
-                Réseaux Sociaux
-              </h3>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                v-model="formData.email"
+                required
+                class="form-input"
+                :class="{ 'input-error': errors.email }"
+              />
+              <span v-if="errors.email" class="error-message">{{
+                errors.email
+              }}</span>
+            </div>
 
-              <div class="social-grid">
-                <a href="#" class="social-box linkedin">
-                  <Icon name="mdi:linkedin" size="2rem" />
-                  <span>LinkedIn</span>
-                </a>
-                <a href="#" class="social-box github">
-                  <Icon name="mdi:github" size="2rem" />
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea
+                id="message"
+                v-model="formData.message"
+                required
+                class="form-textarea"
+                :class="{ 'input-error': errors.message }"
+              ></textarea>
+              <span v-if="errors.message" class="error-message">{{
+                errors.message
+              }}</span>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="submit"
+                class="submit-button"
+                :disabled="isSubmitting"
+              >
+                <span v-if="isSubmitting" class="spinner"></span>
+                <span v-else>Envoyer</span>
+              </button>
+
+              <div class="social-links">
+                <a
+                  href="https://github.com/Fetnmax"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-link github"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                    ></path>
+                  </svg>
                   <span>GitHub</span>
                 </a>
-                <a href="#" class="social-box twitter">
-                  <Icon name="mdi:twitter" size="2rem" />
-                  <span>Twitter</span>
-                </a>
-                <a href="#" class="social-box instagram">
-                  <Icon name="mdi:instagram" size="2rem" />
-                  <span>Instagram</span>
-                </a>
-              </div>
-
-              <button class="flip-button" @click="flipCard">
-                <span>Coordonnées</span>
-                <Icon name="mdi:rotate-3d-variant" size="1.2rem" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Formulaire de contact -->
-        <div class="contact-form-container">
-          <form class="contact-form" @submit.prevent="submitForm">
-            <div
-              class="form-group"
-              :class="{ 'form-focused': activeField === 'name' }"
-            >
-              <label for="name">
-                <Icon name="mdi:account" size="1.2rem" class="label-icon" />
-                Nom
-              </label>
-              <div class="input-wrapper">
-                <input
-                  id="name"
-                  v-model="formData.name"
-                  type="text"
-                  placeholder="Votre nom"
-                  required
-                  @focus="setActiveField('name')"
-                  @blur="setActiveField(null)"
-                />
-                <span class="input-line"></span>
               </div>
             </div>
-
-            <div
-              class="form-group"
-              :class="{ 'form-focused': activeField === 'email' }"
-            >
-              <label for="email">
-                <Icon
-                  name="mdi:email-outline"
-                  size="1.2rem"
-                  class="label-icon"
-                />
-                Email
-              </label>
-              <div class="input-wrapper">
-                <input
-                  id="email"
-                  v-model="formData.email"
-                  type="email"
-                  placeholder="Votre email"
-                  required
-                  @focus="setActiveField('email')"
-                  @blur="setActiveField(null)"
-                />
-                <span class="input-line"></span>
-              </div>
-            </div>
-
-            <div
-              class="form-group"
-              :class="{ 'form-focused': activeField === 'subject' }"
-            >
-              <label for="subject">
-                <Icon
-                  name="mdi:text-subject"
-                  size="1.2rem"
-                  class="label-icon"
-                />
-                Sujet
-              </label>
-              <div class="input-wrapper">
-                <input
-                  id="subject"
-                  v-model="formData.subject"
-                  type="text"
-                  placeholder="Sujet de votre message"
-                  required
-                  @focus="setActiveField('subject')"
-                  @blur="setActiveField(null)"
-                />
-                <span class="input-line"></span>
-              </div>
-            </div>
-
-            <div
-              class="form-group"
-              :class="{ 'form-focused': activeField === 'message' }"
-            >
-              <label for="message">
-                <Icon
-                  name="mdi:message-text"
-                  size="1.2rem"
-                  class="label-icon"
-                />
-                Message
-              </label>
-              <div class="textarea-wrapper">
-                <textarea
-                  id="message"
-                  v-model="formData.message"
-                  placeholder="Votre message"
-                  rows="5"
-                  required
-                  @focus="setActiveField('message')"
-                  @blur="setActiveField(null)"
-                ></textarea>
-                <span class="input-line"></span>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              class="submit-button"
-              :disabled="isSubmitting"
-              :class="{ 'button-pulse': !isSubmitting }"
-            >
-              <span v-if="!isSubmitting">
-                <Icon name="mdi:send" size="1.2rem" class="send-icon" />
-                Envoyer
-              </span>
-              <span v-else class="loading">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-              </span>
-            </button>
-
-            <transition name="fade">
-              <div v-if="formSubmitted" class="form-success">
-                <Icon name="mdi:check-circle" size="1.5rem" />
-                Message envoyé avec succès !
-              </div>
-            </transition>
           </form>
+        </div>
+      </div>
+
+      <div class="success-message" v-if="showSuccessMessage">
+        <div class="success-content">
+          <svg
+            class="checkmark"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 52 52"
+          >
+            <circle
+              class="checkmark-circle"
+              cx="26"
+              cy="26"
+              r="25"
+              fill="none"
+            />
+            <path
+              class="checkmark-check"
+              fill="none"
+              d="M14.1 27.2l7.1 7.2 16.7-16.8"
+            />
+          </svg>
+          <h3>Message envoyé !</h3>
+          <p>
+            Merci pour votre message. Je vous répondrai dans les plus brefs
+            délais.
+          </p>
+          <button @click="closeSuccessMessage" class="close-button">
+            Fermer
+          </button>
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<script lang="ts" setup>
-import { ref } from "vue";
-
-const formData = ref({
-  name: "",
-  email: "",
-  subject: "",
-  message: "",
-});
-
-const isSubmitting = ref(false);
-const formSubmitted = ref(false);
-const isCardFlipped = ref(false);
-const activeField = ref<"name" | "email" | "subject" | "message" | null>(null);
-
-const flipCard = () => {
-  isCardFlipped.value = !isCardFlipped.value;
-};
-
-interface FormFields {
-  name: "name" | "email" | "subject" | "message" | null;
-}
-
-const setActiveField = (field: FormFields["name"]): void => {
-  activeField.value = field;
-};
-
-const submitForm = () => {
-  isSubmitting.value = true;
-
-  // Simuler l'envoi du formulaire (remplacer par votre logique d'envoi réelle)
-  setTimeout(() => {
-    isSubmitting.value = false;
-    formSubmitted.value = true;
-
-    // Reset le formulaire et le message de succès après 5 secondes
-    setTimeout(() => {
-      formSubmitted.value = false;
-      formData.value = {
+<script>
+export default {
+  name: "ContactSection",
+  data() {
+    return {
+      formData: {
         name: "",
         email: "",
-        subject: "",
+        message: "",
+      },
+      errors: {
+        name: "",
+        email: "",
+        message: "",
+      },
+      isSubmitting: false,
+      showSuccessMessage: false,
+    };
+  },
+  methods: {
+    validateForm() {
+      let isValid = true;
+      this.errors = {
+        name: "",
+        email: "",
         message: "",
       };
-    }, 5000);
-  }, 2000);
+
+      if (!this.formData.name.trim()) {
+        this.errors.name = "Le nom est requis";
+        isValid = false;
+      }
+
+      if (!this.formData.email.trim()) {
+        this.errors.email = "L'email est requis";
+        isValid = false;
+      } else if (!this.isValidEmail(this.formData.email)) {
+        this.errors.email = "Veuillez entrer un email valide";
+        isValid = false;
+      }
+
+      if (!this.formData.message.trim()) {
+        this.errors.message = "Le message est requis";
+        isValid = false;
+      }
+
+      return isValid;
+    },
+    isValidEmail(email) {
+      const re =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(String(email).toLowerCase());
+    },
+    async submitForm() {
+      if (!this.validateForm()) return;
+
+      this.isSubmitting = true;
+
+      try {
+        // Envoyer les données au backend
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.formData),
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(
+            result.message || "Erreur lors de l'envoi du message"
+          );
+        }
+
+        // Réinitialiser le formulaire
+        this.formData = {
+          name: "",
+          email: "",
+          message: "",
+        };
+
+        // Afficher le message de succès
+        this.showSuccessMessage = true;
+      } catch (error) {
+        console.error("Erreur lors de l'envoi du formulaire:", error);
+        alert(
+          error.message ||
+            "Une erreur est survenue lors de l'envoi du formulaire. Veuillez réessayer."
+        );
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+    closeSuccessMessage() {
+      this.showSuccessMessage = false;
+    },
+  },
 };
 </script>
 
 <style scoped>
 .contact-section {
-  padding: 5rem 0;
+  padding: 80px 20px;
   background-color: var(--contact-bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.container {
-  max-width: 1200px;
+.contact-container {
+  max-width: 800px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  width: 100%;
+  position: relative;
 }
 
-.section-header {
+.contact-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 60px;
 }
 
 .section-title {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
   position: relative;
-  color: var(--primary-color);
   display: inline-block;
+  color: var(--primary-color);
 }
 
-.section-title:after {
+.section-title::after {
   content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
+  width: 50px;
   height: 3px;
-  background: var(--primary-color);
-  border-radius: 3px;
+  background-color: var(--primary-color);
 }
 
 .section-subtitle {
-  max-width: 600px;
-  margin: 1.5rem auto 0;
-  color: var(--text-color);
   font-size: 1.1rem;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.title-icon {
-  vertical-align: middle;
-  margin-right: 0.5rem;
-}
-
-.contact-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
-}
-
-/* Carte de contact interactive avec effet flip */
-.contact-info {
-  flex: 1;
-  min-width: 320px;
-  perspective: 1000px;
-}
-
-.contact-card {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 400px;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-}
-
-.contact-card.is-flipped {
-  transform: rotateY(180deg);
-}
-
-.contact-card-front,
-.contact-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px var(--modal-shadow-color);
-  background-color: var(--contact-card-bg);
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.contact-card-back {
-  transform: rotateY(180deg);
-}
-
-.contact-card h3 {
-  margin-bottom: 2rem;
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.contact-method {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.2rem;
-  margin-bottom: 1.8rem;
-  padding-bottom: 1.2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.contact-method:last-of-type {
-  border-bottom: none;
-}
-
-.contact-icon-wrapper {
-  background-color: var(--contact-social-bg);
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
+.contact-content {
   display: flex;
   justify-content: center;
-  align-items: center;
-  color: var(--primary-color);
-  transition: all 0.3s ease;
 }
 
-.contact-method:hover .contact-icon-wrapper {
-  transform: scale(1.1);
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.contact-method h4 {
-  margin: 0 0 0.5rem;
-  color: var(--text-color);
-  font-weight: 600;
-}
-
-.contact-method p,
-.contact-method a {
-  margin: 0;
-  color: var(--text-color);
-  transition: all 0.3s ease;
-}
-
-.contact-method a:hover {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-/* Grille des réseaux sociaux */
-.social-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 1rem;
-  margin: 1rem 0;
-  flex-grow: 1;
-}
-
-.social-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: var(--contact-social-bg);
-  padding: 1.5rem;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  color: var(--text-color);
-}
-
-.social-box span {
-  font-weight: 500;
-}
-
-.social-box:hover {
-  transform: translateY(-5px);
-  text-decoration: none;
-}
-
-.social-box.linkedin:hover {
-  background-color: #0077b5;
-  color: white;
-}
-
-.social-box.github:hover {
-  background-color: #333;
-  color: white;
-}
-
-.social-box.twitter:hover {
-  background-color: #1da1f2;
-  color: white;
-}
-
-.social-box.instagram:hover {
-  background: linear-gradient(
-    45deg,
-    #f09433,
-    #e6683c,
-    #dc2743,
-    #cc2366,
-    #bc1888
-  );
-  color: white;
-}
-
-.flip-button {
-  align-self: center;
-  margin-top: auto;
-  background-color: var(--contact-social-bg);
-  border: none;
-  color: var(--text-color);
-  padding: 0.8rem 1.2rem;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.flip-button:hover {
-  background-color: var(--primary-color);
-  color: white;
-  transform: scale(1.05);
-}
-
-/* Formulaire de contact */
 .contact-form-container {
-  flex: 2;
-  min-width: 320px;
   background-color: var(--contact-card-bg);
-  padding: 2.5rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px var(--modal-shadow-color);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  width: 100%;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.contact-form-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-  margin-bottom: 1.8rem;
+  margin-bottom: 25px;
   position: relative;
 }
 
 .form-group label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.8rem;
+  display: block;
+  margin-bottom: 8px;
   font-weight: 500;
-  color: var(--text-color);
-  transition: color 0.3s ease;
+  font-size: 0.9rem;
 }
 
-.label-icon {
-  color: var(--text-color);
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
-}
-
-.form-focused label {
-  color: var(--primary-color);
-}
-
-.form-focused .label-icon {
-  color: var(--primary-color);
-  opacity: 1;
-}
-
-.input-wrapper,
-.textarea-wrapper {
-  position: relative;
-  border-radius: 8px;
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
   background-color: var(--contact-input-bg);
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.input-wrapper input,
-.textarea-wrapper textarea {
-  width: 100%;
-  padding: 1rem 1.2rem;
-  border: none;
-  background-color: transparent;
-  color: var(--text-color);
   font-size: 1rem;
-  z-index: 2;
-  position: relative;
+  color: var(--text-color);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  box-sizing: border-box;
 }
 
-.input-line {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  width: 0;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
-}
-
-.form-focused .input-line {
-  width: 100%;
-}
-
-.input-wrapper input::placeholder,
-.textarea-wrapper textarea::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.input-wrapper input:focus,
-.textarea-wrapper textarea:focus {
+.form-input:focus,
+.form-textarea:focus {
   outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+}
+
+.form-textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.input-error {
+  border-color: #e53e3e !important;
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .submit-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  width: 100%;
-  padding: 1.1rem;
   background-color: var(--contact-button);
   color: white;
   border: none;
-  border-radius: 50px;
-  font-size: 1.1rem;
+  border-radius: 6px;
+  padding: 14px 24px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  position: relative;
-}
-
-.button-pulse {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb, 89, 165, 235), 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 15px rgba(var(--primary-color-rgb, 89, 165, 235), 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb, 89, 165, 235), 0);
-  }
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .submit-button:hover {
   background-color: var(--contact-button-hover);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
 }
 
 .submit-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-  transform: translateY(0);
 }
 
-.send-icon {
-  transition: transform 0.3s ease;
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
 }
 
-.submit-button:hover .send-icon {
-  transform: translateX(5px);
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.loading {
+.social-links {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
+  margin-top: 10px;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: white;
-  animation: bounce 1.5s infinite ease-in-out;
-}
-
-.dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.form-success {
-  margin-top: 1.2rem;
-  padding: 1rem;
-  background-color: rgba(72, 187, 120, 0.2);
-  border-radius: 8px;
+.social-link {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  color: #48bb78;
-}
-
-.form-success svg {
-  color: #48bb78;
-}
-
-.fade-enter-active,
-.fade-leave-active {
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: var(--contact-social-bg);
   transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  text-decoration: none;
+  color: var(--text-color);
+  width: auto;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
+.social-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
 }
 
-/* Media queries pour la responsivité */
+.github svg {
+  stroke: var(--primary-color);
+}
+
+.success-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.success-content {
+  background-color: var(--contact-card-bg);
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  animation: slideUp 0.4s ease;
+}
+
+.success-content h3 {
+  margin: 20px 0 10px;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.success-content p {
+  margin-bottom: 25px;
+  opacity: 0.9;
+}
+
+.close-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+  background-color: var(--contact-button-hover);
+}
+
+.checkmark {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: var(--primary-color);
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke-width: 3;
+  stroke: var(--primary-color);
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles responsifs */
 @media (max-width: 768px) {
   .contact-container {
-    flex-direction: column;
+    padding: 0 15px;
   }
 
-  .contact-form-container,
-  .contact-info {
-    width: 100%;
+  .contact-form-container {
+    padding: 30px 20px;
   }
 
-  .contact-card,
-  .contact-card-front,
-  .contact-card-back {
-    min-height: 350px;
-  }
-}
-
-@media (max-width: 480px) {
   .section-title {
     font-size: 2rem;
-  }
-
-  .contact-info,
-  .contact-form-container {
-    padding: 1.5rem;
-  }
-
-  .social-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>
